@@ -15,15 +15,26 @@ public class CepService {
 
     private final ViaCepClient viaCepClient;
     private final ObjectMapper objectMapper;
+    private final CacheServiceWrapper cacheServiceWrapper;
 
-    public CepService(ViaCepClient viaCepClient, ObjectMapper objectMapper) {
+    public CepService(ViaCepClient viaCepClient, ObjectMapper objectMapper, CacheServiceWrapper cacheServiceWrapper) {
         this.viaCepClient = viaCepClient;
         this.objectMapper = objectMapper;
+        this.cacheServiceWrapper = cacheServiceWrapper;
     }
 
     public Mono<CepResponse> findByCep(String cep) {
-        return viaCepClient
-                .findByCep(cep)
+        return cacheServiceWrapper
+                .exists(cep)
+                .flatMap(exists -> {
+                    if (exists) {
+                        return cacheServiceWrapper.get(cep);
+                    } else {
+                        return viaCepClient
+                                .findByCep(cep)
+                                .flatMap(response -> cacheServiceWrapper.save(cep, response));
+                    }
+                })
                 .flatMap(this::handleResponse);
     }
 

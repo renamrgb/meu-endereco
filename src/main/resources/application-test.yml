@@ -4,6 +4,6 @@ app-config:
   client:
     viacep: https://viacep.com.br/ws/%s/json
   cache:
-    ttl: 86400
+    ttl: 60
     scheduler: 0 * * * * *
     redis-enabled: false
