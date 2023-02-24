@@ -30,7 +30,7 @@ public class ViaCepClient {
                     log.error("#ViaCepClient #findByCep Erro ao chamar a api para o cep {}", cep, throwable);
                     return Mono.empty();
                 })
-                .doOnNext(response -> log.info("#ViaCepClient #findByCep Retorno dos dados da api para o cep {} {}", cep, response));
+                .doOnNext(response -> log.info("#ViaCepClient #findByCep Retorno dos dados da api cepfacil para o cep {} {}", cep, response));
     }
 
     public String buildUri(String cep) {
